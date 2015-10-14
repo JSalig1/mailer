@@ -41,7 +41,7 @@ class Listener
   private
 
   def validate(event)
-    puts "validating..."
+    puts "validating files..."
     puts
     validated = []
     event.each do |file_path|
