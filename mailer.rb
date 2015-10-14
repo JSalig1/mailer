@@ -10,15 +10,15 @@ class Mailer
       retriever_method :imap, {
         address:    "imap.googlemail.com",
         port:       993,
-        user_name:  ENV[USER_NAME],
-        password:   ENV[PASSWORD],
+        user_name:  ENV['USER_NAME'],
+        password:   ENV['PASSWORD'],
         enable_ssl: true
       }
       delivery_method :smtp, {
         port:         587,
         address:      "smtp.gmail.com",
-        user_name:    ENV[USER_NAME],
-        password:     ENV[PASSWORD],
+        user_name:    ENV['USER_NAME'],
+        password:     ENV['PASSWORD'],
         authentication:    "plain",
         enable_starttls_auto:    true
       }
