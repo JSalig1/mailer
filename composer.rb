@@ -6,11 +6,11 @@ class Composer
     @last_message_sent
   end
 
-  def process(server_event, path)
+  def process(server_event)
 
-    project_name, folder_and_file = extract_from(server_event, path)
+    project_name, folder_and_file = extract_from(server_event)
 
-    recipients = @file_reader.get_addresses_for(path, project_name)
+    recipients = @file_reader.get_addresses_for(project_name)
     if recipients.any?
       write_email(project_name, folder_and_file, recipients)
     else
@@ -39,8 +39,8 @@ class Composer
     end
   end
 
-  def extract_from(server_event, path)
-    path_parts = server_event.first.gsub(path, "").split("/")
+  def extract_from(server_event)
+    path_parts = server_event.first.split("/")
     project_name = path_parts[1]
     folder_and_file = path_parts[-2..-1]
     return project_name, folder_and_file

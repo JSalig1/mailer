@@ -59,7 +59,11 @@ class Listener
     puts "file path: #{server_event}"
     sleep(7)
     puts "reporting..."
+    server_event.each(&remove_path_info)
+    @composer.process(server_event)
+  end
 
-    @composer.process(server_event, @path)
+  def remove_path_info
+    Proc.new { |server_entry| server_entry.sub!(@path, "") }
   end
 end
