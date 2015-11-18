@@ -2,9 +2,8 @@ require 'listen'
 
 class Listener
 
-  def initialize(composer, file_reader)
+  def initialize(composer)
     @composer = composer
-    @file_reader = file_reader
     @path = ENV['0_PROJECTS']
   end
 
@@ -63,12 +62,7 @@ class Listener
 
     project_name, folder_and_file = extract_from(server_event)
 
-    recipients = @file_reader.get_addresses_for(@path, project_name)
-    if recipients.any?
-      @composer.write_email(project_name, folder_and_file, recipients)
-    else
-      puts "e-mail text file not present or empty"
-    end
+    @composer.process(project_name, folder_and_file, @path)
   end
 
   def extract_from(server_event)

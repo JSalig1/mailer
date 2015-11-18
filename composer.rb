@@ -1,9 +1,21 @@
 class Composer
 
-  def initialize(mailer)
+  def initialize(mailer, file_reader)
     @mailer = mailer
+    @file_reader = file_reader
     @last_message_sent
   end
+
+  def process(project_name, folder_and_file, path)
+    recipients = @file_reader.get_addresses_for(path, project_name)
+    if recipients.any?
+      write_email(project_name, folder_and_file, recipients)
+    else
+      puts "e-mail text file not present or empty"
+    end
+  end
+
+  private
 
   def write_email(project_name, folder_and_file, recipients)
     emails = @mailer.fetch_emails
@@ -23,8 +35,6 @@ class Composer
       end
     end
   end
-
-  private
 
   def match_notifications_by(folder_and_file, emails)
     file = folder_and_file.last.gsub(/\s/, "")

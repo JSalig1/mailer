@@ -11,9 +11,9 @@ class NotificationsController
   def run
     email_reader = EmailReader.new
     mailer = Mailer.new(email_reader)
-    composer = Composer.new(mailer)
     file_reader = FileReader.new
-    listener = Listener.new(composer, file_reader)
+    composer = Composer.new(mailer, file_reader)
+    listener = Listener.new(composer)
     listener.watch_folder
   end
 end
