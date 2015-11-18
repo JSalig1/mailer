@@ -60,15 +60,22 @@ class Listener
     puts "file path: #{server_event}"
     sleep(7)
     puts "reporting..."
-    path_parts = server_event.first.gsub(@path, "").split("/")
-    project_name = path_parts[1]
-    folder_and_file = path_parts[-2..-1]
+
+    project_name, folder_and_file = extract_from(server_event)
+
     recipients = @file_reader.get_addresses_for(@path, project_name)
     if recipients.any?
       @composer.write_email(project_name, folder_and_file, recipients)
     else
       puts "e-mail text file not present or empty"
     end
+  end
+
+  def extract_from(server_event)
+    path_parts = server_event.first.gsub(@path, "").split("/")
+    project_name = path_parts[1]
+    folder_and_file = path_parts[-2..-1]
+    return project_name, folder_and_file
   end
 
 end
