@@ -8,7 +8,7 @@ class Listener
   end
 
   def watch_folder
-    path = ENV['SERVER_PATH']
+    path = ENV['0_PROJECTS']
     listener = Listen.to(path) do |modified, added, removed|
       if modified.size > 0
         #puts "modified files detected:"
@@ -60,8 +60,8 @@ class Listener
     puts "file path: #{server_event}"
     sleep(7)
     puts "reporting..."
-    path_parts = server_event.first.split("/")
-    project_name = path_parts[3]
+    path_parts = server_event.first.gsub(path, "").split("/")
+    project_name = path_parts[1]
     folder_and_file = path_parts[-2..-1]
     recipients = @file_reader.get_addresses_for(path, project_name)
     if recipients.any?

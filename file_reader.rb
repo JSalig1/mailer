@@ -1,7 +1,7 @@
 class FileReader
 
   def get_addresses_for(path, project)
-    file = path + '/0_PROJECTS/' + project + '/' + '0_notifications_email_list.txt'
+    file = path + '/' + project + '/' + '0_notifications_email_list.txt'
     email_list = []
     if File.exist?(file)
       File.open(file).readlines.each do |line|
