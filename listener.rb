@@ -60,16 +60,6 @@ class Listener
     sleep(7)
     puts "reporting..."
 
-    project_name, folder_and_file = extract_from(server_event)
-
-    @composer.process(project_name, folder_and_file, @path)
+    @composer.process(server_event, @path)
   end
-
-  def extract_from(server_event)
-    path_parts = server_event.first.gsub(@path, "").split("/")
-    project_name = path_parts[1]
-    folder_and_file = path_parts[-2..-1]
-    return project_name, folder_and_file
-  end
-
 end
