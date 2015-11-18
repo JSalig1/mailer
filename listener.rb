@@ -5,11 +5,11 @@ class Listener
   def initialize(composer, file_reader)
     @composer = composer
     @file_reader = file_reader
+    @path = ENV['0_PROJECTS']
   end
 
   def watch_folder
-    path = ENV['0_PROJECTS']
-    listener = Listen.to(path) do |modified, added, removed|
+    listener = Listen.to(@path) do |modified, added, removed|
       if modified.size > 0
         #puts "modified files detected:"
         #puts modified
@@ -22,7 +22,7 @@ class Listener
         sleep(5)
         added = validate(added)
         if added.any?
-          report(added, path)
+          report(added)
         end
       end
       if removed.size > 0
@@ -34,7 +34,7 @@ class Listener
     end
 
     listener.start
-    puts "Watching #{path} for changes..."
+    puts "Watching #{@path} for changes..."
     sleep
   end
 
@@ -55,15 +55,15 @@ class Listener
     return validated
   end
 
-  def report(server_event, path)
+  def report(server_event)
     puts "*******NEW FILE ADDED AT #{Time.now}*******"
     puts "file path: #{server_event}"
     sleep(7)
     puts "reporting..."
-    path_parts = server_event.first.gsub(path, "").split("/")
+    path_parts = server_event.first.gsub(@path, "").split("/")
     project_name = path_parts[1]
     folder_and_file = path_parts[-2..-1]
-    recipients = @file_reader.get_addresses_for(path, project_name)
+    recipients = @file_reader.get_addresses_for(@path, project_name)
     if recipients.any?
       @composer.write_email(project_name, folder_and_file, recipients)
     else
