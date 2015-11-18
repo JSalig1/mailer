@@ -19,7 +19,7 @@ class Listener
         puts
         puts "added files detected:" + added.join(", ")
         sleep(5)
-        added = validate(added)
+        added.reject!(&temp_files)
         if added.any?
           report(added)
         end
@@ -39,21 +39,6 @@ class Listener
 
   private
 
-  def validate(event)
-    puts "validating files..."
-    puts
-    validated = []
-    event.each do |file_path|
-      if file_path.include?("#work_file#") or file_path.include?("#chkpt_file#")
-        puts "work or chkpt file -- skipping..."
-      else
-        validated << file_path
-      end
-    end
-    #puts "valid files: #{validated.inspect}"
-    return validated
-  end
-
   def report(server_event)
     puts "*******NEW FILE ADDED AT #{Time.now}*******"
     puts "file path: #{server_event}"
@@ -65,5 +50,9 @@ class Listener
 
   def remove_path_info
     Proc.new { |server_entry| server_entry.sub!(@path, "") }
+  end
+
+  def temp_files
+    Proc.new { |file_path| file_path.include?("#work_file#") or file_path.include?("#chkpt_file#") }
   end
 end
