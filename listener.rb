@@ -10,25 +10,20 @@ class Listener
   def watch_folder
     listener = Listen.to(@path) do |modified, added, removed|
       if modified.size > 0
-        #puts "modified files detected:"
-        #puts modified
-        #sleep(5)
-        #modified = validate(modified)
+        puts "files modified:"
+        puts modified
       end
       if added.size > 0
-        puts
-        puts "added files detected:" + added.join(", ")
-        sleep(5)
+        puts "files added:"
+        puts added
         added.reject!(&temp_files)
         if added.any?
           report(added)
         end
       end
       if removed.size > 0
-        #puts "removed files detected:"
-        #puts removed
-        #sleep(5)
-        #removed = validate(removed)
+        puts "files removed:"
+        puts removed
       end
     end
 
@@ -40,9 +35,6 @@ class Listener
   private
 
   def report(server_event)
-    puts "*******NEW FILE ADDED AT #{Time.now}*******"
-    puts "file path: #{server_event}"
-    sleep(7)
     puts "reporting..."
     server_event.each(&remove_path_info)
     @composer.process(server_event)
@@ -53,6 +45,6 @@ class Listener
   end
 
   def temp_files
-    Proc.new { |file_path| file_path.include?("#work_file#") or file_path.include?("#chkpt_file#") }
+    Proc.new { |server_entry| server_entry.include?("#work_file#") or server_entry.include?("#chkpt_file#") }
   end
 end
