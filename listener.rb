@@ -10,20 +10,13 @@ class Listener
   def watch_folder
     listener = Listen.to(@path) do |modified, added, removed|
       if modified.size > 0
-        puts "files modified:"
-        puts modified
+        log(modified, "modified")
       end
       if added.size > 0
-        puts "files added:"
-        puts added
-        added.reject!(&temp_files)
-        if added.any?
-          report(added)
-        end
+        log(added, "added")
       end
       if removed.size > 0
-        puts "files removed:"
-        puts removed
+        log(removed, "removed")
       end
     end
 
@@ -33,6 +26,17 @@ class Listener
   end
 
   private
+
+  def log(server_event, action)
+    server_event.reject!(&temp_files)
+    if server_event.any?
+      puts "\nfiles #{action}:"
+      puts server_event
+      if action == "added"
+        report(server_event)
+      end
+    end
+  end
 
   def report(server_event)
     puts "reporting..."
