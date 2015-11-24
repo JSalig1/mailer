@@ -1,12 +1,16 @@
 class Composer
+  include Sidekiq::Worker
 
-  def initialize(mailer, file_reader)
+  def initialize
+    email_reader = EmailReader.new
+    mailer = Mailer.new(email_reader)
+    file_reader = FileReader.new
     @mailer = mailer
     @file_reader = file_reader
     @last_message_sent
   end
 
-  def process(server_event)
+  def perform(server_event)
 
     project_name, folder_and_file = extract_from(server_event)
 

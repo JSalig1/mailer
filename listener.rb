@@ -2,8 +2,8 @@ require 'listen'
 
 class Listener
 
-  def initialize(composer)
-    @composer = composer
+  def initialize #(composer)
+    #@composer = composer
     @path = ENV['0_PROJECTS']
   end
 
@@ -41,7 +41,7 @@ class Listener
   def report(server_event)
     puts "reporting..."
     server_event.each(&remove_path_info)
-    @composer.process(server_event)
+    Composer.perform_async(server_event)
   end
 
   def remove_path_info
@@ -51,4 +51,5 @@ class Listener
   def temp_files
     Proc.new { |server_entry| server_entry.include?("#work_file#") or server_entry.include?("#chkpt_file#") }
   end
+
 end
